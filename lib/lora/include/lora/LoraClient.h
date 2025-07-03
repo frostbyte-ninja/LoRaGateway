@@ -19,6 +19,7 @@ public:
   std::optional<String> receiveMessage();
   void setPacketReceivedAction(PacketReceivedAction callback);
   int getRssi();
+  int32_t randomInt();
 
 private:
   aes::Aes m_aes;

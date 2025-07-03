@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <limits>
 #include <vector>
 
 #include <SPI.h>
@@ -132,5 +133,11 @@ int
 LoraClient::getRssi()
 {
   return static_cast<int>(m_lora.getRSSI());
+}
+
+int32_t
+LoraClient::randomInt()
+{
+  return m_lora.random(std::numeric_limits<int32_t>::max());
 }
 } // namespace lora
