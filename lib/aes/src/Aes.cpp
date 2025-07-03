@@ -1,7 +1,21 @@
 #include <aes/Aes.hpp>
 
+#include <algorithm>
+#include <limits>
+
 namespace aes {
-Aes::Aes(const Array& key, paddingMode paddingMode) noexcept
+namespace {
+void
+fillIv(Aes::Array& aesIv)
+{
+  using ValueType = Aes::Array::value_type;
+  std::generate(aesIv.begin(), aesIv.end(), [] {
+    return static_cast<ValueType>(random(std::numeric_limits<ValueType>::min(), std::numeric_limits<ValueType>::max()));
+  });
+}
+} // namespace
+
+Aes::Aes(const Array& key, const paddingMode paddingMode) noexcept
   : m_key{key}
 {
   m_aesLib.set_paddingmode(paddingMode);
@@ -11,7 +25,7 @@ uint16_t
 Aes::encrypt(const byte* input, const uint16_t length, byte* const output)
 {
   Array aesIv;
-  m_aesLib.gen_iv(aesIv.data());
+  fillIv(aesIv);
   memcpy(output, aesIv.data(), aesIv.size());
 
   return m_aesLib.encrypt(input, length, output + aesIv.size(), m_key.data(), sizeof(m_key), aesIv.data()) +
