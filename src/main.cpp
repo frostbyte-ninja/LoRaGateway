@@ -39,14 +39,9 @@ messageReceived()
   g_messageReceived = true;
 }
 
-} // namespace
-
 void
-setup()
+initLoRa()
 {
-  Serial.begin(115200);
-  delay(500);
-
   g_loraClient.setPacketReceivedAction(messageReceived);
 
   if (not g_loraClient.begin()) {
@@ -55,6 +50,16 @@ setup()
       yield();
     }
   }
+}
+} // namespace
+
+void
+setup()
+{
+  Serial.begin(115200);
+  delay(500);
+
+  initLoRa();
 }
 
 void
