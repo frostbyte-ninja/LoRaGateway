@@ -51,6 +51,15 @@ initLoRa()
     }
   }
 }
+
+void
+initRandom()
+{
+  const int32_t value{g_loraClient.randomInt()};
+  randomSeed(value);
+  srand(value);
+}
+
 } // namespace
 
 void
@@ -61,6 +70,8 @@ setup()
 
   initLoRa();
 
+  initRandom();
+  
   g_loraClient.startReceive();
 }
 
