@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stddef.h>
 #include <stdint.h>
 
 #include <array>
@@ -8,7 +9,7 @@
 
 #include <AESLib.h>
 
-namespace aes {
+namespace crypto {
 class Aes
 {
 public:
@@ -25,4 +26,4 @@ private:
   AESLib m_aesLib;
   Array m_key;
 };
-} // namespace aes
+} // namespace crypto

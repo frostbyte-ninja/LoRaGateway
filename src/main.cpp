@@ -13,7 +13,7 @@ constexpr auto g_gatewayId{"xy"};
 constexpr auto g_mqttServer{"xxxxx"};
 constexpr uint16_t g_mqttPort{1883};
 
-constexpr aes::Aes::Array
+constexpr crypto::Aes::Array
   g_aesKey{0xC5, 0xBD, 0x18, 0x6E, 0x98, 0xBE, 0x79, 0xF3, 0xFA, 0x98, 0xE3, 0x30, 0xF7, 0x1E, 0x4E, 0x93};
 
 // NOLINTBEGIN(*-avoid-non-const-global-variables,*-err58-cpp)

@@ -39,8 +39,8 @@ toString(const char* const array, const std::size_t length)
 
 } // namespace
 
-LoraClient::LoraClient(const aes::Aes::Array& key) noexcept
-  : m_aes{key}
+LoraClient::LoraClient(const crypto::Aes::Array& key) noexcept
+  : m_cipher{key}
   , m_module{g_radioNssPin, g_radioDio1Pin, g_radioResetPin, g_radioBusyPin, SPI}
   , m_lora{&m_module}
 {
@@ -113,7 +113,7 @@ LoraClient::receiveMessage()
   }
 
   std::vector<byte> decryptedMessageBuffer(receiveBuffer.size());
-  const auto decryptedSize{m_aes.decrypt(receiveBuffer.data(), receiveBuffer.size(), decryptedMessageBuffer.data())};
+  const auto decryptedSize{m_cipher.decrypt(receiveBuffer.data(), receiveBuffer.size(), decryptedMessageBuffer.data())};
 
   if (decryptedSize == 0 or decryptedSize > packetLength) {
     Serial.println(F("Failed to decrypt data"));

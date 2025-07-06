@@ -5,7 +5,8 @@
 #include <optional>
 
 #include <RadioLib.h>
-#include <aes/Aes.hpp>
+
+#include <crypto/Aes.hpp>
 
 namespace lora {
 class LoraClient
@@ -13,7 +14,7 @@ class LoraClient
 public:
   using PacketReceivedAction = void (*)();
 
-  explicit LoraClient(const aes::Aes::Array& key) noexcept;
+  explicit LoraClient(const crypto::Aes::Array& key) noexcept;
 
   bool begin();
   bool startReceive();
@@ -23,7 +24,7 @@ public:
   int32_t randomInt();
 
 private:
-  aes::Aes m_aes;
+  crypto::Aes m_cipher;
   Module m_module;
   SX1262 m_lora;
 };
