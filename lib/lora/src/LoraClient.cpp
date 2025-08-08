@@ -59,7 +59,7 @@ LoraClient::begin()
                                     g_preambleLength,
                                     g_txcoVoltage)};
       state != RADIOLIB_ERR_NONE) {
-    Serial.print(F("LoRa init failed, code: "));
+    Serial.print(F("LoRa begin failed, code: "));
     Serial.println(state);
     return false;
   }
@@ -82,8 +82,14 @@ LoraClient::begin()
     return false;
   }
 
+  return true;
+}
+
+bool
+LoraClient::startReceive()
+{
   if (const auto state{m_lora.startReceive()}; state != RADIOLIB_ERR_NONE) {
-    Serial.print(F("LoRa begin failed, code: "));
+    Serial.print(F("Failed to start receive, code: "));
     Serial.println(state);
     return false;
   }

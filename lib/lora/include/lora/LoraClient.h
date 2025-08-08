@@ -16,6 +16,7 @@ public:
   explicit LoraClient(const aes::Aes::Array& key) noexcept;
 
   bool begin();
+  bool startReceive();
   std::optional<String> receiveMessage();
   void setPacketReceivedAction(PacketReceivedAction callback);
   int getRssi();

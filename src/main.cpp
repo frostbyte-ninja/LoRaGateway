@@ -60,6 +60,8 @@ setup()
   delay(500);
 
   initLoRa();
+
+  g_loraClient.startReceive();
 }
 
 void
