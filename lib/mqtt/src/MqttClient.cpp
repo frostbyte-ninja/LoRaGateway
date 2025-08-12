@@ -63,6 +63,7 @@ MqttClient::wifiReconnect() const
     return;
   }
 
+  WiFi.disconnect();
   WiFi.begin(m_ssid, m_wifiPassword);
   while (WiFi.status() != WL_CONNECTED) { // NOLINT (*-static-accessed-through-instance)
     delay(500);
