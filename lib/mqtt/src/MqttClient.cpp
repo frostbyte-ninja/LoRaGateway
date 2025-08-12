@@ -47,9 +47,9 @@ MqttClient::reconnect()
     wifiReconnect();
 
     if (m_pubSubClient.connect(m_clientId.c_str(), m_mqttUsername.c_str(), m_mqttPassword.c_str())) {
-      Serial.println("MQTT connected");
+      Serial.println(F("MQTT connected"));
     } else {
-      Serial.print("MQTT failed, state: ");
+      Serial.print(F("MQTT failed, state: "));
       Serial.println(m_pubSubClient.state());
       delay(1000);
     }
@@ -67,10 +67,10 @@ MqttClient::wifiReconnect() const
   WiFi.begin(m_ssid, m_wifiPassword);
   while (WiFi.status() != WL_CONNECTED) { // NOLINT (*-static-accessed-through-instance)
     delay(500);
-    Serial.print(".");
+    Serial.print(F("."));
   }
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
+  Serial.println(F("WiFi connected"));
+  Serial.println(F("IP address: "));
   Serial.println(WiFi.localIP());
 }
 } // namespace mqtt
