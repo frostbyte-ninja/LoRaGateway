@@ -17,7 +17,7 @@ enum class ValueType : uint8_t
   String,
 };
 
-struct DiscoveryInfo
+constexpr struct DiscoveryInfo
 {
   const char* key;
   const char* name;
@@ -31,10 +31,8 @@ struct DiscoveryInfo
   const char* payloadOn;
   const char* payloadOff;
   ValueType valueType;
-};
-
-// clang-format off
-constexpr DiscoveryInfo g_discoveryInfos[] {
+} g_discoveryInfos[]{
+  // clang-format off
   {"b", "Battery", "_batt", g_mqttSensorTopic, "/batt", "battery", "%", "mdi:battery", "diagnostic", nullptr, nullptr, ValueType::Integer},
   {"r", "RSSI", "_rssi", g_mqttSensorTopic, "/rssi", "signal_strength", "dBm", "mdi:signal", "diagnostic", nullptr, nullptr, ValueType::Integer},
   {"rw", "Text", "_row", g_mqttSensorTopic, "/row", nullptr, nullptr, "mdi:text", nullptr, nullptr, nullptr, ValueType::String},
@@ -54,8 +52,8 @@ constexpr DiscoveryInfo g_discoveryInfos[] {
   {"dr", "Door", "_door", g_mqttBinarySensorTopic, "/door", "door", nullptr, "mdi:door", nullptr, g_payloadOn, g_payloadOff, ValueType::String},
   {"wd", "Window", "_window", g_mqttBinarySensorTopic, "/window", "window", nullptr, "mdi:window-closed", nullptr, g_payloadOn, g_payloadOff, ValueType::String},
   {"vb", "Vibration", "_vibration", g_mqttBinarySensorTopic, "/vibration", "vibration", nullptr, "mdi:vibrate", nullptr, g_payloadOn, g_payloadOff, ValueType::String},
+  // clang-format on
 };
-// clang-format on
 
 void
 fillJsonDoc(JsonDocument& json, const DiscoveryInfo* info, const String& nodeId)
