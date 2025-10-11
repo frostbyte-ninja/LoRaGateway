@@ -11,67 +11,52 @@ MqttClient::MqttClient(String ssid,
                        String mqttPassword,
                        String clientId,
                        String mqttServer,
-                       const uint16_t mqttPort) noexcept
+                       const std::uint16_t mqttPort) noexcept
   : m_ssid{std::move(ssid)}
   , m_wifiPassword{std::move(wifiPassword)}
   , m_mqttUsername{std::move(mqttUsername)}
   , m_mqttPassword{std::move(mqttPassword)}
   , m_clientId{std::move(clientId)}
   , m_mqttServer{std::move(mqttServer)}
-  , m_pubSubClient{m_wifiClient}
 {
-  m_pubSubClient.setBufferSize(1024);
-  m_pubSubClient.setServer(m_mqttServer.c_str(), mqttPort);
-}
+  WiFi.setSleep(false);
 
-MqttClient::~MqttClient() = default;
+  m_mqttClient.setCredentials(m_mqttUsername.c_str(), m_mqttPassword.c_str());
+  m_mqttClient.setClientId(m_clientId.c_str());
+  m_mqttClient.setServer(m_mqttServer.c_str());
+  m_mqttClient.getMqttConfig()->broker.address.port = mqttPort;
 
-void
-MqttClient::loop()
-{
-  reconnect();
-  m_pubSubClient.loop();
+  m_mqttClient.setAutoReconnect(true);
+  m_mqttClient.onConnect([](bool) {
+    Serial.println(F("MQTT connected"));
+  });
+  m_mqttClient.onDisconnect([](bool) {
+    Serial.println(F("MQTT disconnected"));
+  });
 }
 
 bool
-MqttClient::publish(const String& topic, const String& payload, const bool retained)
+MqttClient::publish(const String& topic, const String& payload, const bool retain)
 {
-  reconnect();
-  return m_pubSubClient.publish(topic.c_str(), payload.c_str(), retained);
+  return m_mqttClient.publish(topic.c_str(), 2, retain, payload.c_str(), static_cast<int>(payload.length())) != -1;
 }
 
 void
-MqttClient::reconnect()
+MqttClient::connect()
 {
-  while (not m_pubSubClient.connected()) {
-    wifiReconnect();
-
-    if (m_pubSubClient.connect(m_clientId.c_str(), m_mqttUsername.c_str(), m_mqttPassword.c_str())) {
-      Serial.println(F("MQTT connected"));
-    } else {
-      Serial.print(F("MQTT failed, state: "));
-      Serial.println(m_pubSubClient.state());
-      delay(1000);
-    }
-  }
-}
-
-void
-MqttClient::wifiReconnect() const
-{
-  if (WiFi.status() == WL_CONNECTED) { // NOLINT (*-static-accessed-through-instance)
-    return;
-  }
-
-  Serial.println(F("WiFi disconnected, reconnecting..."));
-  WiFi.disconnect();
+  Serial.println(F("WiFi connecting..."));
   WiFi.begin(m_ssid, m_wifiPassword);
-  while (WiFi.status() != WL_CONNECTED) { // NOLINT (*-static-accessed-through-instance)
+  while (not WiFi.isConnected()) {
     delay(500);
-    Serial.print(F("."));
   }
   Serial.println(F("WiFi connected"));
-  Serial.println(F("IP address: "));
+  Serial.print(F("IP address: "));
   Serial.println(WiFi.localIP());
+
+  Serial.println(F("MQTT connecting..."));
+  m_mqttClient.connect();
+  while (not m_mqttClient.connected()) {
+    delay(500);
+  }
 }
 } // namespace mqtt

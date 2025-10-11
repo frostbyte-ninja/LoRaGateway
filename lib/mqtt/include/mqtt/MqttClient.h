@@ -1,11 +1,10 @@
 #pragma once
 
+#include <cstdint>
+
 #include <Arduino.h>
 
-#include <stdint.h>
-
-#include <PubSubClient.h>
-#include <WiFiClient.h>
+#include <PsychicMqttClient.h>
 
 namespace mqtt {
 class MqttClient
@@ -17,16 +16,11 @@ public:
              String mqttPassword,
              String clientId,
              String mqttServer,
-             uint16_t mqttPort = 1883) noexcept;
-  ~MqttClient();
-
-  bool publish(const String& topic, const String& payload, bool retained = true);
-  void loop();
+             std::uint16_t mqttPort = 1883) noexcept;
+  bool publish(const String& topic, const String& payload, bool retain = true);
+  void connect();
 
 private:
-  void reconnect();
-  void wifiReconnect() const;
-
   String m_ssid;
   String m_wifiPassword;
   String m_mqttUsername;
@@ -34,7 +28,6 @@ private:
   String m_clientId;
   String m_mqttServer;
 
-  WiFiClient m_wifiClient;
-  PubSubClient m_pubSubClient;
+  PsychicMqttClient m_mqttClient;
 };
 } // namespace mqtt

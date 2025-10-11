@@ -1,6 +1,7 @@
-#include <Arduino.h>
-
 #include <chrono>
+#include <cstdint>
+
+#include <Arduino.h>
 
 #include <lora/LoraClient.h>
 #include <message/MessageProcessor.h>
@@ -15,8 +16,8 @@ constexpr auto g_wifiPassword{"xxxxx"};
 constexpr auto g_mqttUsername{"xxxxx"};
 constexpr auto g_mqttPassword{"xxxxx"};
 constexpr auto g_gatewayId{"xy"};
-constexpr auto g_mqttServer{"xxxxx"};
-constexpr uint16_t g_mqttPort{1883};
+constexpr auto g_mqttServer{"mqtt://mqtt-server.lan"};
+constexpr std::uint16_t g_mqttPort{1883};
 
 constexpr crypto::Aes::Array
   g_aesKey{0xC5, 0xBD, 0x18, 0x6E, 0x98, 0xBE, 0x79, 0xF3, 0xFA, 0x98, 0xE3, 0x30, 0xF7, 0x1E, 0x4E, 0x93};
@@ -61,7 +62,7 @@ initLoRa()
 void
 initRandom()
 {
-  const int32_t value{g_loraClient.randomInt()};
+  const std::int32_t value{g_loraClient.randomInt()};
   randomSeed(value);
   srand(value);
 }
@@ -78,6 +79,7 @@ setup()
 
   initRandom();
 
+  g_mqttClient.connect();
   g_loraClient.startReceive();
   g_watchdog.start();
 }
@@ -85,7 +87,6 @@ setup()
 void
 loop()
 {
-  g_mqttClient.loop();
   g_watchdog.reset();
 
   if (g_messageReceived) {
