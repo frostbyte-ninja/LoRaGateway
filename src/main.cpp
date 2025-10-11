@@ -1,8 +1,13 @@
 #include <Arduino.h>
 
+#include <chrono>
+
 #include <lora/LoraClient.h>
 #include <message/MessageProcessor.h>
 #include <mqtt/MqttClient.h>
+#include <watchdog/Watchdog.h>
+
+using namespace std::chrono_literals;
 
 namespace {
 constexpr auto g_wifiSsid{"xxxxx"};
@@ -18,6 +23,7 @@ constexpr crypto::Aes::Array
 
 // NOLINTBEGIN(*-avoid-non-const-global-variables,*-err58-cpp)
 
+watchdog::Watchdog g_watchdog{20s};
 mqtt::MqttClient
   g_mqttClient{g_wifiSsid, g_wifiPassword, g_mqttUsername, g_mqttPassword, g_gatewayId, g_mqttServer, g_mqttPort};
 lora::LoraClient g_loraClient{g_aesKey};
@@ -71,14 +77,16 @@ setup()
   initLoRa();
 
   initRandom();
-  
+
   g_loraClient.startReceive();
+  g_watchdog.start();
 }
 
 void
 loop()
 {
   g_mqttClient.loop();
+  g_watchdog.reset();
 
   if (g_messageReceived) {
     g_messageReceived = false;

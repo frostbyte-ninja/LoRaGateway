@@ -1,5 +1,6 @@
 #include <message/MessageProcessor.h>
 
+#include <optional>
 #include <utility>
 
 namespace message {
