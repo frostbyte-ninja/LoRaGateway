@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <cstdint>
 
 #include <Arduino.h>
@@ -21,12 +22,18 @@ public:
   void connect();
 
 private:
+  void init();
+  void attemptWifiReconnect();
+
   String m_ssid;
   String m_wifiPassword;
   String m_mqttUsername;
   String m_mqttPassword;
   String m_clientId;
   String m_mqttServer;
+  std::uint16_t m_mqttPort;
+  std::atomic<std::uint32_t> m_nextReconnectMs;
+  bool m_initialized;
 
   PsychicMqttClient m_mqttClient;
 };
