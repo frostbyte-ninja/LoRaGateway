@@ -83,7 +83,7 @@ MqttClient::init()
         Serial.println(WiFi.localIP());
       } break;
       case ARDUINO_EVENT_WIFI_STA_DISCONNECTED: {
-        Serial.printf("WiFi disconnected (Reason: %s)\n", disconnectReasonFor(info.wifi_sta_disconnected.reason));
+        Serial.printf(F("WiFi disconnected (Reason: %s)\n"), disconnectReasonFor(info.wifi_sta_disconnected.reason));
         attemptWifiReconnect();
       } break;
       default:;
