@@ -104,20 +104,27 @@ getDiscoveryInfo(const String& key)
 std::optional<String>
 convertToString(const JsonDocument& doc, const String& key, const ValueType valueType)
 {
+  const auto value = doc[key];
+
   switch (valueType) {
-    case ValueType::Integer:
-      if (doc[key].is<int>()) {
-        return String{doc[key].as<int>()};
+    case ValueType::Integer: {
+      if (value.is<unsigned long>()) {
+        return String(value.as<unsigned long>());
       }
-      break;
-    case ValueType::Float:
-      if (doc[key].is<float>()) {
-        return String{doc[key].as<float>(), 2};
+      if (value.is<long>()) {
+        return String(value.as<long>());
       }
-      break;
+    } break;
+
+    case ValueType::Float: {
+      if (value.is<double>()) {
+        return String(value.as<double>(), 2);
+      }
+    } break;
+
     case ValueType::String:
-      if (doc[key].is<const char*>() || doc[key].is<String>()) {
-        return doc[key].as<String>();
+      if (value.is<const char*>() or value.is<String>()) {
+        return value.as<String>();
       }
       break;
   }
