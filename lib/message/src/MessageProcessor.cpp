@@ -194,7 +194,7 @@ MessageProcessor::publishUpdate(const JsonDocument& doc) const
   for (const auto& info : g_discoveryInfos) {
     const String key{info.key};
     const auto payload{convertToString(doc, key, info.valueType)};
-    if (not payload.has_value()) {
+    if (not payload.has_value() or payload->isEmpty()) {
       continue;
     }
 
