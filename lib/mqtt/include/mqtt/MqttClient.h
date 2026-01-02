@@ -54,7 +54,7 @@ public:
              String mqttUsername,
              String mqttPassword,
              String clientId,
-             String mqttServer,
+             const String& mqttServer,
              std::uint16_t mqttPort = 1883,
              std::optional<TlsConfig> tlsConfig = std::nullopt) noexcept;
   bool publish(const String& topic, const String& payload, bool retain = true);

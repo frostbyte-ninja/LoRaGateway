@@ -16,7 +16,7 @@ constexpr auto g_wifiPassword{"xxxxx"};
 constexpr auto g_mqttUsername{"xxxxx"};
 constexpr auto g_mqttPassword{"xxxxx"};
 constexpr auto g_gatewayId{"xy"};
-constexpr auto g_mqttServer{"mqtt://mqtt-server.lan"};
+constexpr auto g_mqttServer{"mqtt-server.lan"};
 constexpr std::uint16_t g_mqttPort{1883};
 
 constexpr crypto::Aes::Array

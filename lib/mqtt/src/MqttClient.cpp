@@ -24,7 +24,7 @@ MqttClient::MqttClient(String ssid,
                        String mqttUsername,
                        String mqttPassword,
                        String clientId,
-                       String mqttServer,
+                       const String& mqttServer,
                        const std::uint16_t mqttPort,
                        std::optional<TlsConfig> tlsConfig) noexcept
   : m_ssid{std::move(ssid)}
@@ -32,7 +32,7 @@ MqttClient::MqttClient(String ssid,
   , m_mqttUsername{std::move(mqttUsername)}
   , m_mqttPassword{std::move(mqttPassword)}
   , m_clientId{std::move(clientId)}
-  , m_mqttServer{std::move(mqttServer)}
+  , m_mqttServer{(tlsConfig ? String("mqtts") : String("mqtt")) + "://" + mqttServer}
   , m_mqttPort{mqttPort}
   , m_tlsConfig{std::move(tlsConfig)}
   , m_nextReconnectMs{0U}
