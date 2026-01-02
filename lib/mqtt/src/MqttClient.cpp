@@ -25,7 +25,8 @@ MqttClient::MqttClient(String ssid,
                        String mqttPassword,
                        String clientId,
                        String mqttServer,
-                       const std::uint16_t mqttPort) noexcept
+                       const std::uint16_t mqttPort,
+                       std::optional<TlsConfig> tlsConfig) noexcept
   : m_ssid{std::move(ssid)}
   , m_wifiPassword{std::move(wifiPassword)}
   , m_mqttUsername{std::move(mqttUsername)}
@@ -33,6 +34,7 @@ MqttClient::MqttClient(String ssid,
   , m_clientId{std::move(clientId)}
   , m_mqttServer{std::move(mqttServer)}
   , m_mqttPort{mqttPort}
+  , m_tlsConfig{std::move(tlsConfig)}
   , m_nextReconnectMs{0U}
   , m_initialized{false}
 {
@@ -94,6 +96,13 @@ MqttClient::init()
   m_mqttClient.setClientId(m_clientId.c_str());
   m_mqttClient.setServer(m_mqttServer.c_str());
   m_mqttClient.getMqttConfig()->broker.address.port = m_mqttPort;
+
+  if (m_tlsConfig) {
+    m_mqttClient.setCACert(m_tlsConfig->caCert().c_str());
+    if (m_tlsConfig->clientCert() and m_tlsConfig->clientKey()) {
+      m_mqttClient.setClientCertificate(m_tlsConfig->clientCert()->c_str(), m_tlsConfig->clientKey()->c_str());
+    }
+  }
 
   m_mqttClient.setAutoReconnect(true);
   m_mqttClient.onConnect([](bool) {
